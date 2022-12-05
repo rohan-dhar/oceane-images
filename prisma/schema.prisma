@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Image {
+  id      String      @id @default(uuid()) @unique
+  user   String      
+  name    String
+  metadata Json 
+  location String
+  time DateTime 
+  s3_url String
+}
