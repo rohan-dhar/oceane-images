@@ -42,7 +42,7 @@ route.get("/", async(req, res) => {
 
 route.get("/:albumid", async(req, res) => { 
     try {
-        //first check if the album belongs to the user
+        //get all images for an album
         const album = await prisma.album.findUnique({
             where: {
                 id: req.params.albumid
@@ -76,6 +76,7 @@ route.get("/:albumid", async(req, res) => {
 })
 
 route.post("/create", async(req, res) => {
+    //create an album
     const userid = getUserId(req.headers["authorization"])
 
     if (!req.body || !req.body || !req.body.name || !req.body.images || !req.body.cover || req.body.error) 
@@ -109,10 +110,9 @@ route.post("/create", async(req, res) => {
     }
 })
 
-//delete album also add
 route.delete("/:albumid", async(req, res) => {
+    //delete an album
     try {
-        //first check if the album belongs to the user
         const album = await prisma.album.findUnique({
             where: {
                 id: req.params.albumid
