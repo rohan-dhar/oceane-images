@@ -46,7 +46,7 @@ model Album {
 
 model AlbumImages {
   albumId String
-  album   Album  @relation(fields: [albumId], references: [id])
+  album   Album  @relation(fields: [albumId], references: [id]) 
   imageId String
   image   Image  @relation(fields: [imageId], references: [id])
 
