@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import authMiddleware from "./src/middleware/authMiddleware.js";
 import images from "./src/images/index.js";
+import albums from "./src/albums/index.js";
 import bodyParser from "body-parser";
 
 const app = express();
@@ -14,6 +15,7 @@ app.use((req, res, next) => jsonParser(req, res, next));
 app.use(authMiddleware);
 
 app.use("/images", images);
+app.use("/albums", albums);
 
 const port = process.env.PORT || 6542;
 app.listen(port, () => {

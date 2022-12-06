@@ -22,7 +22,7 @@ routes.post("/startUpload", async (req, res) => {
 	if (!uploadUrl)
 		return badResponse(res, { status: "Could not create S3 session" });
 
-	return res.json({ uploadUrl });
+	return res.status(200).json({ uploadUrl });
 });
 
 export default routes;
