@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 import { unauthResponse } from "../utils/errorResponses.js";
 
-const secret = process.env["JWT_SECRET"] || "EMPTY_SECRET";
+const secret = process.env.JWT_SECRET || "EMPTY_SECRET";
 
-const authMiddleware = (req, res, next) => {
+const authMiddleware = (err, res, req, next) => {
 	let token = req.headers["authorization"];
 	console.log("token :>> ", token);
 	if (!token) return unauthResponse(res);
