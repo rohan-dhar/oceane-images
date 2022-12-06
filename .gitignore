@@ -11,6 +11,9 @@ lerna-debug.log*
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 .DS_Store
+.vscode
+node_modules
+prisma/migrations
 
 # Runtime data
 pids

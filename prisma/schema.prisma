@@ -8,12 +8,49 @@ datasource db {
   relationMode = "prisma"
 }
 
-model Image {
-  id      String      @id @default(uuid()) @unique
-  user   String      
+model User {
+  id      String      @id @default(uuid())
+  email   String      @unique
   name    String
-  metadata Json 
-  location String
-  time DateTime 
-  s3_url String
+  picture String?
+  tokens  JwtTokens[]
+}
+
+model JwtTokens {
+  id     String @id @default(uuid())
+  token  String @unique
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  @@index([userId])
+}
+
+model Image {
+  id          String        @id @unique @default(uuid())
+  userId      String
+  name        String
+  metadata    Json
+  location    String
+  time        DateTime
+  s3_url      String
+  AlbumImages AlbumImages[]
+}
+
+model Album {
+  id          String        @id @unique @default(uuid())
+  userId      String //could make this a string[] for implementing sharing?
+  name        String
+  createdAt   DateTime      @default(now())
+  AlbumImages AlbumImages[]
+}
+
+model AlbumImages {
+  albumId String
+  album   Album  @relation(fields: [albumId], references: [id])
+  imageId String
+  image   Image  @relation(fields: [imageId], references: [id])
+
+  @@id([albumId, imageId]) //composite primary key
+  @@index([albumId])
+  @@index([imageId])
 }
