@@ -32,7 +32,7 @@ model Image {
   metadata  Json
   location  String
   createdAt DateTime      @default(now()) //upload time
-  s3Url     String
+  fileName     String
   albums    AlbumImages[]
 }
 

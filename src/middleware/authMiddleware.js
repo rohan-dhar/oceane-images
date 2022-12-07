@@ -5,14 +5,15 @@ const secret = process.env.JWT_SECRET || "EMPTY_SECRET";
 
 const authMiddleware = (err, res, req, next) => {
 	let token = req.headers["authorization"];
-	console.log("token :>> ", token);
+
 	if (!token) return unauthResponse(res);
 	token = token.substring(7);
 
 	jwt.verify(token, secret, function (err, payload) {
-		if (err) return unauthResponse(res);
+		if (err || !payload?.userid) return unauthResponse(res);
 		req.token = token;
 		req.tokenPayload = payload;
+		req.user = payload.userid;
 		next();
 	});
 };
