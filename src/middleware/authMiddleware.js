@@ -3,7 +3,7 @@ import { unauthResponse } from "../utils/errorResponses.js";
 
 const secret = process.env.JWT_SECRET || "EMPTY_SECRET";
 
-const authMiddleware = (err, res, req, next) => {
+const authMiddleware = (req, res, next) => {
 	let token = req.headers["authorization"];
 
 	if (!token) return unauthResponse(res);
@@ -14,8 +14,8 @@ const authMiddleware = (err, res, req, next) => {
 		req.token = token;
 		req.tokenPayload = payload;
 		req.user = payload.userid;
-		next();
 	});
+	next();
 };
 
 export default authMiddleware;
