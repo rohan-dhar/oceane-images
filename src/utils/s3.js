@@ -32,7 +32,7 @@ export const makeS3UploadUrl = async (imageType) => {
 		const signedUrl = await getSignedUrl(s3Client, command, {
 			expiresIn: S3_URL_EXPIRY_TIME,
 		});
-		return signedUrl;
+		return { uploadUrl: signedUrl, imageName };
 	} catch (err) {
 		console.log("err :>> ", err);
 		return null;
