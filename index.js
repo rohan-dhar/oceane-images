@@ -12,7 +12,7 @@ const jsonParser = bodyParser.json();
 
 app.use(cors());
 app.use((req, res, next) => jsonParser(req, res, next));
-app.use(authMiddleware);
+// app.use(authMiddleware);
 
 app.use("/images", images);
 app.use("/albums", albums);
