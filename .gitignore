@@ -1,3 +1,5 @@
+
+
 # Logs
 logs
 *.log
@@ -9,13 +11,6 @@ lerna-debug.log*
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-
-.DS_Store
-node_modules
-prisma/migrations
-
-#VSCode
-.vscode
 
 # Runtime data
 pids

@@ -22,7 +22,7 @@ route.get("/", async (req, res) => {
 				id: true,
 				name: true,
 				createdAt: true,
-				coverPicture: true,
+				cover: true,
 			},
 		});
 		console.log(albums);
@@ -89,7 +89,7 @@ route.post("/create", async (req, res) => {
 			data: {
 				userId: userid,
 				name: req.body.name,
-				coverPicture: req.body.cover,
+				cover: req.body.cover,
 			},
 		});
 
