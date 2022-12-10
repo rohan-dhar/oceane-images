@@ -45,6 +45,7 @@ route.get("/:albumid", async (req, res) => {
 			},
 			select: {
 				userId: true,
+				name: true,
 			},
 		});
 
@@ -62,6 +63,7 @@ route.get("/:albumid", async (req, res) => {
 		console.log(images);
 		return res.json({
 			status: "images for album returned",
+			...album,
 			images,
 		});
 	} catch (exception) {
