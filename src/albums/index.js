@@ -25,7 +25,7 @@ route.get("/", async (req, res) => {
 				cover: true,
 			},
 		});
-		console.log(albums);
+
 		return res.json({
 			status: "albums returned",
 			albums,
@@ -87,11 +87,16 @@ route.post("/create", async (req, res) => {
 		return badResponse(res);
 
 	try {
+		const coverImage = await prisma.image.findUnique({
+			where: { id: req.body.cover },
+			select: { fileName: true },
+		});
+
 		const album = await prisma.album.create({
 			data: {
 				userId: userid,
 				name: req.body.name,
-				cover: req.body.cover,
+				cover: coverImage.fileName,
 			},
 		});
 

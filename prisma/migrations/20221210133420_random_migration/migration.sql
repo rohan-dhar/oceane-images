@@ -29,6 +29,7 @@ CREATE TABLE `Image` (
     `location` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `fileName` VARCHAR(191) NOT NULL,
+    `tag` VARCHAR(191) NULL,
 
     UNIQUE INDEX `Image_id_key`(`id`),
     PRIMARY KEY (`id`)
@@ -40,7 +41,7 @@ CREATE TABLE `Album` (
     `userId` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `coverPicture` VARCHAR(191) NOT NULL,
+    `cover` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `Album_id_key`(`id`),
     PRIMARY KEY (`id`)
