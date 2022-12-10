@@ -16,6 +16,7 @@ app.use(authMiddleware);
 
 app.use("/images", images);
 app.use("/albums", albums);
+app.use("/search", search);
 
 const port = process.env.PORT || 6542;
 app.listen(port, () => {

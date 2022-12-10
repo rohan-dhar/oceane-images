@@ -5,7 +5,6 @@ import {
 	serverError,
 	unauthResponse,
 } from "../utils/errorResponses.js";
-import jwt from "jsonwebtoken";
 
 const route = express();
 
