@@ -5,7 +5,8 @@ import {
 	serverError,
 	unauthResponse,
 } from "../utils/errorResponses.js";
-import jwt from "jsonwebtoken";
+import imageTypes from "../utils/imageTypes.js";
+import { body, validationResult } from "express-validator";
 
 const route = express();
 
@@ -70,45 +71,51 @@ route.get("/:albumid", async (req, res) => {
 	}
 });
 
-route.post("/create", async (req, res) => {
-	//create an album
-	const userid = req.user;
+route.post(
+	"/create", 
+	body("name").isString(),
+	body("images").isArray(),
+	body("cover")
+		.isString()
+		.custom((value) => {
+			if (!imageTypes[value.split(".")[1].toLowerCase()]) {
+				throw new Error("The image format is not supported");
+			}
+			return true;
+		}),
+	async (req, res) => {
+		const err2 = validationResult(req);
+		if(!err2.isEmpty() || req.err) {
+			return badResponse(res, err2.mapped());
+		}
 
-	if (
-		!req.body ||
-		!req.body ||
-		!req.body.name ||
-		!req.body.images ||
-		!req.body.cover ||
-		req.body.error
-	)
-		return badResponse(res);
+		const userid = req.user;
 
-	try {
-		const album = await prisma.album.create({
-			data: {
-				userId: userid,
-				name: req.body.name,
-				cover: req.body.cover,
-			},
-		});
-
-		for (let img of req.body.images) {
-			await prisma.albumImages.create({
+		try {
+			const album = await prisma.album.create({
 				data: {
-					albumId: album.id,
-					imageId: img,
+					userId: userid,
+					name: req.body.name,
+					cover: req.body.cover,
 				},
 			});
+
+			for (let img of req.body.images) {
+				await prisma.albumImages.create({
+					data: {
+						albumId: album.id,
+						imageId: img,
+					},
+				});
+			}
+			return res.json({
+				status: "album created",
+				albumId: album.id,
+			});
+		} catch (exception) {
+			console.log(exception);
+			return serverError(res);
 		}
-		return res.json({
-			status: "album created",
-			albumId: album.id,
-		});
-	} catch (exception) {
-		console.log(exception);
-		return serverError(res);
-	}
 });
 
 route.delete("/:albumid", async (req, res) => {
