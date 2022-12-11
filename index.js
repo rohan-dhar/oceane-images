@@ -4,6 +4,8 @@ import cors from "cors";
 import authMiddleware from "./src/middleware/authMiddleware.js";
 import images from "./src/images/index.js";
 import albums from "./src/albums/index.js";
+import search from "./src/search/index.js";
+
 import bodyParser from "body-parser";
 
 const app = express();

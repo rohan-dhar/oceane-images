@@ -59,7 +59,6 @@ route.get("/:albumid", async (req, res) => {
 			},
 		});
 
-		console.log(images);
 		return res.json({
 			status: "images for album returned",
 			...album,
@@ -130,8 +129,7 @@ route.delete("/:albumid", async (req, res) => {
 		});
 
 		if (!album) return badResponse(res);
-		if (album.userId != getUserId(req.headers["authorization"]))
-			return unauthResponse(res);
+		if (album.userId != req.user) return unauthResponse(res);
 
 		await prisma.album.delete({
 			where: {
