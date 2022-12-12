@@ -4,6 +4,7 @@ import { badResponse, serverError } from "../utils/errorResponses.js";
 
 const route = express();
 
+// GET /search/:keyword
 route.get("/:keyword", async (req, res) => {
 	const keyword = req.params.keyword;
 	if (!keyword) badResponse(res);

@@ -7,6 +7,7 @@ import { makeS3UploadUrl } from "../utils/s3.js";
 
 const routes = express();
 
+// /images/startUpload
 routes.post(
 	"/startUpload",
 	body("imageType").toLowerCase().isIn(imageTypes),
@@ -26,6 +27,7 @@ routes.post(
 	}
 );
 
+// POST /images
 routes.post(
 	"/",
 	body("name").isString(),
@@ -67,6 +69,7 @@ routes.post(
 	}
 );
 
+// GET /images
 routes.get("/", async (req, res) => {
 	const images = await prisma.image.findMany({
 		where: {
