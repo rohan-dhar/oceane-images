@@ -1,13 +1,18 @@
 import prisma from "../prisma.js";
 import express from "express";
 import {
+	actionAlreadyPerformed,
 	badResponse,
+	invalidUser,
 	serverError,
 	unauthResponse,
 } from "../utils/errorResponses.js";
+import { body, validationResult } from "express-validator";
+import { Prisma } from "@prisma/client";
 
 const route = express();
 
+// GET /albums
 route.get("/", async (req, res) => {
 	//get all albums for a user
 	const userid = req.user;
@@ -35,21 +40,65 @@ route.get("/", async (req, res) => {
 	}
 });
 
+
+// GET /albums/shared
+route.get("/shared", async(req, res) => {
+	//get all albums shared with the user.
+	try{
+		const sharedalbums = await prisma.albumShares.findMany({
+			where: { userId: req.user },
+			select: {
+				album: {
+					select: {
+						id: true,
+						name: true,
+						createdAt: true,
+						cover: true
+					}
+				}
+			}
+		})
+
+		let albums = []
+		sharedalbums.forEach(item => {
+			albums.push(item["album"])
+		})
+
+		return res.status(200).json({
+			status:"shared albums returned",
+			albums
+		});
+	} catch(exception) {
+		console.log(exception)
+		return serverError(res);
+	}
+});
+
+
+// GET /albums/ALBUMID
 route.get("/:albumid", async (req, res) => {
 	try {
-		//get all images for an album
-		const album = await prisma.album.findUnique({
+
+		//get all images for an album. 
+
+		const isAlbumOwner = await prisma.album.findFirst({
 			where: {
 				id: req.params.albumid,
+				userId: req.user
 			},
-			select: {
-				userId: true,
-				name: true,
-			},
-		});
+			select: { name: true },
+		})
+		.then(r => Boolean(r))
 
-		if (!album) return badResponse(res);
-		if (album.userId != req.user) return unauthResponse(res);
+		const isAlbumShared = await prisma.albumShares.findFirst({
+			where: {
+				albumId: req.params.albumid,
+				userId: req.user
+			}, 
+		})
+		.then(r => Boolean(r))
+
+		if (!isAlbumOwner && !isAlbumShared) return unauthResponse(res);
 
 		const images = await prisma.image.findMany({
 			where: {
@@ -61,7 +110,6 @@ route.get("/:albumid", async (req, res) => {
 
 		return res.json({
 			status: "images for album returned",
-			...album,
 			images,
 		});
 	} catch (exception) {
@@ -69,6 +117,7 @@ route.get("/:albumid", async (req, res) => {
 		return serverError(res);
 	}
 });
+
 
 route.post("/create", async (req, res) => {
 	//create an album
@@ -116,6 +165,8 @@ route.post("/create", async (req, res) => {
 	}
 });
 
+
+// DELETE /albums/ALBUMID
 route.delete("/:albumid", async (req, res) => {
 	//delete an album
 	try {
@@ -145,5 +196,45 @@ route.delete("/:albumid", async (req, res) => {
 		return serverError(res);
 	}
 });
+
+
+// POST /albums/ALBUMID/share
+route.post(
+	"/:albumid/share",
+	body("email")
+	.isString(),
+	async (req, res) => {
+		const err = validationResult(req);
+		if (!err.isEmpty()) {
+			return badResponse(res, err.mapped());
+		}
+
+		try{ 
+			const shareduser = await prisma.user.findUnique({
+				where: { email: req.body.email }, 
+				select: { id: true }
+			})
+
+			if (!shareduser || shareduser.id===req.user) return invalidUser(res);
+
+			await prisma.albumShares.create({
+				data: {
+					albumId: req.params.albumid,
+					userId: shareduser.id
+				}
+			})
+			return res.json({
+				status: "album shared",
+			});
+		} catch(exception) {
+			console.log(exception);
+			if (exception instanceof Prisma.PrismaClientKnownRequestError) {
+				return actionAlreadyPerformed(res);
+			}
+			return serverError(res);
+		}
+	}
+);
+
 
 export default route;
