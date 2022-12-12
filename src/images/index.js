@@ -70,7 +70,7 @@ routes.post(
 routes.get("/", async (req, res) => {
 	const images = await prisma.image.findMany({
 		where: {
-			userId: res.user,
+			userId: req.user,
 		},
 	});
 

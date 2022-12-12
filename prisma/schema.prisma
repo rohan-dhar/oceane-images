@@ -44,7 +44,6 @@ model Album {
   createdAt DateTime      @default(now())
   cover     String //cover picture name
   images    AlbumImages[]
-  sharedWith User[]
 }
 
 model AlbumImages {
