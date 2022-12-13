@@ -1,21 +1,41 @@
-FROM node:alpine
+FROM debian:bullseye as builder
 
-WORKDIR /oceane
+ARG NODE_VERSION=19.2.0
 
-COPY package.json ./
+RUN apt-get update; apt install -y curl
+RUN curl https://get.volta.sh | bash
+ENV VOLTA_HOME /root/.volta
+ENV PATH /root/.volta/bin:$PATH
+RUN volta install node@${NODE_VERSION}
 
-COPY prisma ./prisma/
+#######################################################################
 
-COPY .env ./
+RUN mkdir /app
+WORKDIR /app
 
-COPY tsconfig.json ./
+# NPM will not install any package listed in "devDependencies" when NODE_ENV is set to "production",
+# to install all modules: "npm install --production=false".
+# Ref: https://docs.npmjs.com/cli/v9/commands/npm-install#description
+
+ENV NODE_ENV production
 
 COPY . .
 
-RUN npm install
+RUN npm install && npm install -g typescript
 
 RUN npx prisma generate
 
-EXPOSE 6542
+FROM debian:bullseye
 
-CMD npm run prod
+LABEL fly_launch_runtime="nodejs"
+
+COPY --from=builder /root/.volta /root/.volta
+COPY --from=builder /app /app
+
+WORKDIR /app
+ENV NODE_ENV production
+ENV PATH /root/.volta/bin:$PATH
+
+RUN echo "Hello, lol"
+
+CMD ["npm", "run", "prod"]

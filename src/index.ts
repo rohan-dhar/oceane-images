@@ -20,7 +20,7 @@ app.use("/images", images);
 app.use("/albums", albums);
 app.use("/search", search);
 
-const port = process.env.PORT || 6542;
+const port = process.env.PORT || 8080;
 app.listen(port, () => {
 	console.log(`Server running on port ${port}`);
 });
