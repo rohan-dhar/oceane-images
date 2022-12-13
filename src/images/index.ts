@@ -1,9 +1,12 @@
-import prisma from "../utils/prisma.js";
+ // @ts-nocheck comment
+
+
+import prisma from "../utils/prisma";
 import express from "express";
 import { body, validationResult } from "express-validator";
-import { badResponse } from "../utils/errorResponses.js";
-import imageTypes from "../utils/imageTypes.js";
-import { makeS3UploadUrl } from "../utils/s3.js";
+import { badResponse } from "../utils/errorResponses";
+import imageTypes from "../utils/imageTypes";
+import { makeS3UploadUrl } from "../utils/s3";
 
 const routes = express();
 

@@ -1,10 +1,10 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import authMiddleware from "./src/middleware/authMiddleware.js";
-import images from "./src/images/index.js";
-import albums from "./src/albums/index.js";
-import search from "./src/search/index.js";
+import authMiddleware from "./middleware/authMiddleware";
+import images from "./images/index";
+import albums from "./albums/index";
+import search from "./search/index";
 
 import bodyParser from "body-parser";
 

@@ -1,4 +1,6 @@
-import prisma from "../prisma.js";
+ // @ts-nocheck comment
+
+import prisma from "../utils/prisma";
 import express from "express";
 import {
 	actionAlreadyPerformed,
@@ -6,9 +8,9 @@ import {
 	invalidUser,
 	serverError,
 	unauthResponse,
-} from "../utils/errorResponses.js";
+} from "../utils/errorResponses";
 import { body, validationResult } from "express-validator";
-import { Prisma } from "@prisma/client";
+import { Album, Prisma } from "@prisma/client";
 
 const route = express();
 
@@ -59,7 +61,7 @@ route.get("/shared", async(req, res) => {
 			}
 		})
 
-		let albums = []
+		let albums: Album | any = []
 		sharedalbums.forEach(item => {
 			albums.push(item["album"])
 		})
@@ -131,7 +133,7 @@ route.post("/create", async (req, res) => {
 		!req.body.cover ||
 		req.body.error
 	)
-		return badResponse(res);
+		return badResponse(res, null);
 
 	try {
 		const coverImage = await prisma.image.findUnique({
@@ -179,7 +181,7 @@ route.delete("/:albumid", async (req, res) => {
 			},
 		});
 
-		if (!album) return badResponse(res);
+		if (!album) return badResponse(res, null);
 		if (album.userId != req.user) return unauthResponse(res);
 
 		await prisma.album.delete({

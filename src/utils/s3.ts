@@ -2,7 +2,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import uuid4 from "uuid4";
-import imageTypes from "./imageTypes.js";
+import imageTypes from "./imageTypes";
 
 export const accessKey = process.env.AWS_ACCESS_KEY || "";
 export const secretKey = process.env.AWS_SECRET_KEY || "";
@@ -16,8 +16,8 @@ export const s3Client = new S3Client({
 
 export const S3_URL_EXPIRY_TIME = 10 * 60;
 
-export const makeS3UploadUrl = async (imageType) => {
-	const extension = imageTypes[imageType];
+export const makeS3UploadUrl = async (imageType: String) => {
+	const extension = imageTypes[imageType as keyof typeof imageTypes];
 
 	const imageName = `${uuid4()}.${extension}`;
 
