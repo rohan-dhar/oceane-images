@@ -86,11 +86,8 @@ route.get("/:albumid", async (req, res) => {
 		const isAlbumOwner = await prisma.album.findFirst({
 			where: {
 				id: req.params.albumid,
-				userId: req.user
 			},
-			select: { name: true },
 		})
-		.then(r => Boolean(r))
 
 		const isAlbumShared = await prisma.albumShares.findFirst({
 			where: {
@@ -112,6 +109,8 @@ route.get("/:albumid", async (req, res) => {
 
 		return res.json({
 			status: "images for album returned",
+			userId: isAlbumOwner.userId,
+			name: isAlbumOwner.name,
 			images,
 		});
 	} catch (exception) {
